@@ -1,0 +1,15 @@
+{
+  "labelLow": "A Friend❄️",
+  "labelMedium": "Good Friend\uD83D\uDE43",
+  "labelHigh": "Close Friend\uD83D\uDD25",
+  "messageDialog": "Do you want to say congrats?",
+  "messageLow": "congratulation!",
+  "messageMedium": "congrats!\uD83D\uDE0A",
+  "messageHigh": "congrats!\uD83D\uDE0A\uD83C\uDF89❤️",
+  "direction": "ltr",
+  "font": "'Georgia', serif",
+  "send": "Send",
+  "cancel": "Cancel",
+  "textToSearch": "congrats",
+  "titleText": "How friendly are you?"
+}
