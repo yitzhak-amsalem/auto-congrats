@@ -6,8 +6,9 @@ const client = {language: ""};
 const execute = (conversationPanelWrapper) => {
     scanChatForMessages(conversationPanelWrapper).then(messages => {
         const messagesText = collectText(messages);
-        const countOccurrences = searchTextInMessages(messagesText, translation.textToSearch);
-        if (countOccurrences >= threshold && notSentYet(messages)) {
+        const relevantMessages = filterText(messagesText);
+        const countOccurrences = searchTextInMessages(relevantMessages, translation.textToSearch);
+        if (countOccurrences >= threshold && notSentYet(messages, messagesText)) {
             const confirmation = window.confirm(translation.messageDialog);
             if (confirmation) {
                 const dialog = createDialog();
@@ -31,19 +32,26 @@ const collectText = (messages) => {
     return textArr;
 }
 
+const filterText = (messagesText) => {
+    const firstCongratsIndex = getFirstCongratsIndex(messagesText);
+    return messagesText.slice(firstCongratsIndex)
+}
+
+const getFirstCongratsIndex = (messagesText) => {
+    return messagesText.findIndex(text => text.includes(translation.textToSearch));
+}
+
 const searchTextInMessages = (messagesText, textToSearch) => {
     return messagesText.filter(text => text.includes(textToSearch)).length;
 }
 
-const notSentYet = (messages) => {
-    let notSentByMe = true;
-    Array.from(messages).forEach(msg => {
-        const sendByOthers = msg.querySelector('[data-testid="group-chat-profile-picture"]');
-        if (!sendByOthers) {
-            notSentByMe = false;
-        }
+const notSentYet = (messages, messagesText) => {
+    const firstCongratsIndex = getFirstCongratsIndex(messagesText);
+    return !Array.from(messages).slice(firstCongratsIndex).find((msg) => {
+        const sentByMeElement1 = msg.querySelector('[data-testid="msg-dblcheck"]');
+        const sentByMeElement = msg.querySelector('[data-testid="msg-check"]');
+        return (sentByMeElement || sentByMeElement1);
     })
-    return notSentByMe;
 }
 
 const waitForNodes = (parentNode, selector) => {
@@ -222,7 +230,7 @@ const createCancelButton = () => {
 }
 
 const getLevelByValue = (val) => {
-    let label = "";
+    let label;
     if (val > 6) {
         label = translation.labelHigh;
         myMessage = translation.messageHigh;
