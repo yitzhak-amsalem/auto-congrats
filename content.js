@@ -5,10 +5,11 @@ const client = {language: ""};
 
 const execute = (conversationPanelWrapper) => {
     scanChatForMessages(conversationPanelWrapper).then(messages => {
-        const messagesText = collectText(messages);
-        const relevantMessages = filterText(messagesText);
+        const parsedMessages = parseMessages(messages);
+        const relevantMessages = filterRelevance(parsedMessages);
         const countOccurrences = searchTextInMessages(relevantMessages, translation.textToSearch);
-        if (countOccurrences >= threshold && notSentYet(messages, messagesText)) {
+        const notSentYet = !sentByMeInMessages(relevantMessages);
+        if (countOccurrences >= threshold && notSentYet) {
             const confirmation = window.confirm(translation.messageDialog);
             if (confirmation) {
                 const dialog = createDialog();
@@ -24,34 +25,31 @@ const scanChatForMessages = (conversationPanelWrapper) => {
     return waitForNodes(conversationPanelWrapper, msgSelectorAll);
 }
 
-const collectText = (messages) => {
-    const textArr = [];
-    Array.from(messages).forEach(msg => {
-        textArr.push(msg.textContent);
-    })
-    return textArr;
+const parseMessages = (messages) => {
+    return Array.from(messages).map(msg => ({"text": msg.textContent, "sentByMe": isSentByMe(msg)}));
 }
 
-const filterText = (messagesText) => {
+const isSentByMe = (msg) => {
+    const sentByMeElementA = msg.querySelector('[data-testid="msg-dblcheck"]');
+    const sentByMeElementB = msg.querySelector('[data-testid="msg-check"]');
+    return (sentByMeElementA !== null || sentByMeElementB !== null);
+}
+
+const filterRelevance = (messagesText) => {
     const firstCongratsIndex = getFirstCongratsIndex(messagesText);
     return messagesText.slice(firstCongratsIndex)
 }
 
 const getFirstCongratsIndex = (messagesText) => {
-    return messagesText.findIndex(text => text.includes(translation.textToSearch));
+    return messagesText.findIndex(msg => msg.text.includes(translation.textToSearch));
 }
 
 const searchTextInMessages = (messagesText, textToSearch) => {
-    return messagesText.filter(text => text.includes(textToSearch)).length;
+    return messagesText.filter(msg => msg.text.includes(textToSearch)).length;
 }
 
-const notSentYet = (messages, messagesText) => {
-    const firstCongratsIndex = getFirstCongratsIndex(messagesText);
-    return !Array.from(messages).slice(firstCongratsIndex).find((msg) => {
-        const sentByMeElement1 = msg.querySelector('[data-testid="msg-dblcheck"]');
-        const sentByMeElement = msg.querySelector('[data-testid="msg-check"]');
-        return (sentByMeElement || sentByMeElement1);
-    })
+const sentByMeInMessages = (relevantMessages) => {
+    return relevantMessages.some(msg => msg.sentByMe);
 }
 
 const waitForNodes = (parentNode, selector) => {
