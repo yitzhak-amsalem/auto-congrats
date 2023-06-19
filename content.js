@@ -1,5 +1,6 @@
 let myMessage = "";
-const threshold = 5;
+const counterMinThreshold = 5;
+const timeMaxThreshold = 12;
 let translation = {}
 const client = {language: ""};
 
@@ -9,7 +10,8 @@ const execute = (conversationPanelWrapper) => {
         const relevantMessages = filterRelevance(parsedMessages);
         const countOccurrences = searchTextInMessages(relevantMessages, translation.textToSearch);
         const notSentYet = !sentByMeInMessages(relevantMessages);
-        if (countOccurrences >= threshold && notSentYet) {
+        const stillRelevant = !hasTimeThresholdPassed(relevantMessages[0].messageDate);
+        if (countOccurrences >= counterMinThreshold && notSentYet && stillRelevant) {
             const confirmation = window.confirm(translation.messageDialog);
             if (confirmation) {
                 const dialog = createDialog();
@@ -26,13 +28,30 @@ const scanChatForMessages = (conversationPanelWrapper) => {
 }
 
 const parseMessages = (messages) => {
-    return Array.from(messages).map(msg => ({"text": msg.textContent, "sentByMe": isSentByMe(msg)}));
+    return Array.from(messages).map(msg => ({"text": msg.textContent, "sentByMe": isSentByMe(msg), "messageDate": getMessageDate(msg)}));
 }
 
 const isSentByMe = (msg) => {
     const sentByMeElementA = msg.querySelector('[data-testid="msg-dblcheck"]');
     const sentByMeElementB = msg.querySelector('[data-testid="msg-check"]');
     return (sentByMeElementA !== null || sentByMeElementB !== null);
+}
+
+const getMessageDate = (msg) => {
+    const dateElement = msg.querySelector("[data-pre-plain-text]");
+    if (dateElement !== null){
+        const dateString = dateElement.getAttribute("data-pre-plain-text");
+        return parseDate(dateString);
+    }
+    return null;
+}
+
+const parseDate = (dateString) => {
+    const dateAndTime = dateString.match(/\[(.*?)\]/)[1];
+    const [time, dayMonthYear] = dateAndTime.split(', ');
+    const [hour, minute] = time.split(':');
+    const [day, month, year] = dayMonthYear.split('.');
+    return new Date(year, month - 1, day, hour, minute);
 }
 
 const filterRelevance = (messagesText) => {
@@ -50,6 +69,12 @@ const searchTextInMessages = (messagesText, textToSearch) => {
 
 const sentByMeInMessages = (relevantMessages) => {
     return relevantMessages.some(msg => msg.sentByMe);
+}
+
+const hasTimeThresholdPassed = (firstMessageDate) => {
+    const currentDate = new Date();
+    const twelveHoursAfter = new Date(firstMessageDate.getTime() + (timeMaxThreshold * 60 * 60 * 1000));
+    return currentDate > twelveHoursAfter;
 }
 
 const waitForNodes = (parentNode, selector) => {
