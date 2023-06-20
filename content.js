@@ -274,15 +274,20 @@ const getLevelByValue = (val) => {
     let label;
     if (val > 6) {
         label = translation.labelHigh;
-        myMessage = translation.messageHigh;
+        myMessage = getRandomMessageFromPool(translation.messageHigh);
     } else if (val < 4) {
         label = translation.labelLow;
-        myMessage = translation.messageLow;
+        myMessage = getRandomMessageFromPool(translation.messageLow);
     } else {
         label = translation.labelMedium;
-        myMessage = translation.messageMedium;
+        myMessage = getRandomMessageFromPool(translation.messageMedium);
     }
     return label;
+}
+
+const getRandomMessageFromPool = (messagesLevel) => {
+    const randomIndex = Math.floor(Math.random() * messagesLevel.length);
+    return messagesLevel[randomIndex];
 }
 
 const sendMessage = () => {
