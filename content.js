@@ -9,11 +9,9 @@ const textToSearchEn = "congrat";
 const execute = (conversationPanelWrapper) => {
     scanChatForMessages(conversationPanelWrapper).then(messages => {
         const parsedMessages = parseMessages(messages);
-        const relevantMessages = filterRelevance(parsedMessages);
-        const countOccurrences = searchTextInMessages(relevantMessages);
-        const notSentYet = !sentByMeInMessages(relevantMessages);
-        const stillRelevant = !hasTimeThresholdPassed(relevantMessages[0].messageDate);
-        if (countOccurrences >= counterMinThreshold && notSentYet && stillRelevant) {
+        const relevantMessages = relevanceFilter(parsedMessages);
+        const goToSend = scanRelevantForDecision(relevantMessages)
+        if (goToSend) {
             const confirmation = window.confirm(translation.messageDialog);
             if (confirmation) {
                 const dialog = createDialog();
@@ -22,6 +20,16 @@ const execute = (conversationPanelWrapper) => {
             }
         }
     })
+}
+
+const scanRelevantForDecision = (relevantMessages) => {
+    if (relevantMessages.length < counterMinThreshold){
+        return false;
+    }
+    const countOccurrences = searchTextInMessages(relevantMessages);
+    const notSentYet = !sentByMeInMessages(relevantMessages);
+    const stillRelevant = !hasTimeThresholdPassed(relevantMessages[0].messageDate);
+    return countOccurrences >= counterMinThreshold && notSentYet && stillRelevant;
 }
 
 const scanChatForMessages = (conversationPanelWrapper) => {
@@ -60,9 +68,9 @@ const parseDate = (dateString) => {
     return new Date(year, month - 1, day, hour, minute);
 }
 
-const filterRelevance = (messagesText) => {
+const relevanceFilter = (messagesText) => {
     const firstCongratsIndex = getFirstCongratsIndex(messagesText);
-    return messagesText.slice(firstCongratsIndex)
+    return firstCongratsIndex > -1 ? messagesText.slice(firstCongratsIndex) : []
 }
 
 const getFirstCongratsIndex = (messagesText) => {
