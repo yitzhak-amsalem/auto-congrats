@@ -3,12 +3,14 @@ const counterMinThreshold = 5;
 const timeMaxThreshold = 12;
 let translation = {}
 const client = {language: ""};
+const textToSearchHe = "מזל טוב";
+const textToSearchEn = "congrat";
 
 const execute = (conversationPanelWrapper) => {
     scanChatForMessages(conversationPanelWrapper).then(messages => {
         const parsedMessages = parseMessages(messages);
         const relevantMessages = filterRelevance(parsedMessages);
-        const countOccurrences = searchTextInMessages(relevantMessages, translation.textToSearch);
+        const countOccurrences = searchTextInMessages(relevantMessages);
         const notSentYet = !sentByMeInMessages(relevantMessages);
         const stillRelevant = !hasTimeThresholdPassed(relevantMessages[0].messageDate);
         if (countOccurrences >= counterMinThreshold && notSentYet && stillRelevant) {
@@ -28,7 +30,11 @@ const scanChatForMessages = (conversationPanelWrapper) => {
 }
 
 const parseMessages = (messages) => {
-    return Array.from(messages).map(msg => ({"text": msg.textContent, "sentByMe": isSentByMe(msg), "messageDate": getMessageDate(msg)}));
+    return Array.from(messages).map(msg => ({
+        "text": msg.textContent,
+        "sentByMe": isSentByMe(msg),
+        "messageDate": getMessageDate(msg)
+    }));
 }
 
 const isSentByMe = (msg) => {
@@ -39,7 +45,7 @@ const isSentByMe = (msg) => {
 
 const getMessageDate = (msg) => {
     const dateElement = msg.querySelector("[data-pre-plain-text]");
-    if (dateElement !== null){
+    if (dateElement !== null) {
         const dateString = dateElement.getAttribute("data-pre-plain-text");
         return parseDate(dateString);
     }
@@ -60,11 +66,15 @@ const filterRelevance = (messagesText) => {
 }
 
 const getFirstCongratsIndex = (messagesText) => {
-    return messagesText.findIndex(msg => msg.text.includes(translation.textToSearch));
+    return messagesText.findIndex(msg => includesText(msg));
 }
 
-const searchTextInMessages = (messagesText, textToSearch) => {
-    return messagesText.filter(msg => msg.text.includes(textToSearch)).length;
+const searchTextInMessages = (messagesText) => {
+    return messagesText.filter(msg => includesText(msg)).length;
+}
+
+const includesText = (msg) => {
+    return msg.text.includes(textToSearchHe) || msg.text.toLowerCase().includes(textToSearchEn);
 }
 
 const sentByMeInMessages = (relevantMessages) => {
