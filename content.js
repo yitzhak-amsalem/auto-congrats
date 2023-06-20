@@ -186,7 +186,7 @@ const labelDiv = () => {
     div.style.fontFamily = translation.font;
     div.style.fontSize = "1.4em";
     div.innerHTML = translation.labelMedium;
-    myMessage = translation.messageMedium;
+    myMessage = getRandomMessageFromPool(translation.messageMedium);
     div.style.marginTop = "10px";
     div.style.marginBottom = "15px";
     return div;

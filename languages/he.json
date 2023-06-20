@@ -4,7 +4,7 @@
   "labelHigh": "חבר אח\uD83D\uDD25",
   "messageDialog": "האם תרצה לאחל מזל טוב?",
   "messageLow": ["מזל טוב!"],
-  "messageMedium": ["מזל טוב!\uD83D\uDE0A"],
+  "messageMedium": ["מזל טוב!\uD83D\uDE0A" ,"מזל טוב!!\uD83C\uDF89" ,"מזל טוב!\uD83C\uDF81\uD83C\uDF88" ,"מזל טוב!\uD83E\uDD73" ,"מזל טוב!!\uD83C\uDF8A"],
   "messageHigh": ["מזל טוב!\uD83D\uDE0A\uD83C\uDF89❤️"],
   "direction": "rtl",
   "font": "'Georgia', serif",
