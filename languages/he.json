@@ -5,7 +5,7 @@
   "messageDialog": "האם תרצה לאחל מזל טוב?",
   "messageLow": ["מזל טוב!", "מזל טוב\uD83D\uDE0C", "מזל טוב\uD83D\uDE42", "מזל טוב\uD83C\uDF89", "מזל טוב\uD83C\uDF88"],
   "messageMedium": ["מזל טוב!\uD83D\uDE0A" ,"מזל טוב!!\uD83C\uDF89" ,"מזל טוב!\uD83C\uDF81\uD83C\uDF88" ,"מזל טוב!\uD83E\uDD73" ,"מזל טוב!!\uD83C\uDF8A"],
-  "messageHigh": ["מזל טוב!\uD83D\uDE0A\uD83C\uDF89❤️", "מזל טוב!\uD83C\uDF8A\uD83D\uDE0D\uD83E\uDD70", "מזל טוב! \uD83D\uDC93\uD83D\uDC9D\uD83C\uDF89", "מזל טוב!!\uD83E\uDEF6\uD83C\uDFFB❣️\uD83C\uDF88" ,"מזל טוב!\" \uD83E\uDEF6\uD83C\uDFFB❤️❣️"],
+  "messageHigh": ["מזל טוב!\uD83D\uDE0A\uD83C\uDF89❤️", "מזל טוב!\uD83C\uDF8A\uD83D\uDE0D\uD83E\uDD70", "מזל טוב! \uD83D\uDC93\uD83D\uDC9D\uD83C\uDF89", "מזל טוב!!\uD83E\uDEF6\uD83C\uDFFB❣️\uD83C\uDF88" ,"מזל טוב! \uD83E\uDEF6\uD83C\uDFFB❤️❣️"],
   "direction": "rtl",
   "font": "'Georgia', serif",
   "send": "שלח",
