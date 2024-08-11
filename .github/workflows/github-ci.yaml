@@ -18,19 +18,8 @@ jobs:
         run: zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
       - name: List after zipping
         run: |
-          echo "Current directory:"
-          pwd
-          echo "Contents of current directory:"
-          ls -la
           echo "All files and directories (including hidden):"
           find . -not -path '*/\.*'
-#      - name: Create ZIP file
-#        run: |
-#          zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
-#          echo "ZIP file details:"
-#          ls -l build.zip
-#          echo "ZIP file contents:"
-#          unzip -l build.zip
       - name: Verify ZIP file
         run: |
           if [ -f "build.zip" ]; then
@@ -56,12 +45,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish to Chrome Web Store
-        uses: redromnon/chrome-webstore-publish@v1.1.0
+        uses: ekryski/chrome-webstore-upload@v1.0.3
         with:
-          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
           client_id: ${{ secrets.CHROME_CLIENT_ID }}
           client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
           zip: ./build.zip
 #      - uses: actions/checkout@v3
 #      - name: Upload to Chrome Web Store
