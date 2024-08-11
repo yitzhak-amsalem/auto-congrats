@@ -13,7 +13,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
       - name: Zip the extension
         run: zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
       - name: List after zipping
@@ -48,7 +48,7 @@ jobs:
         uses: trmcnvn/chrome-addon@v2
         with:
           extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: ./build.zip
+          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
