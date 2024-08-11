@@ -14,7 +14,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: List files before zipping
+      - name: Zip the extension
+        run: zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
+      - name: List after zipping
         run: |
           echo "Current directory:"
           pwd
@@ -22,13 +24,13 @@ jobs:
           ls -la
           echo "All files and directories (including hidden):"
           find . -not -path '*/\.*'
-      - name: Create ZIP file
-        run: |
-          zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
-          echo "ZIP file details:"
-          ls -l build.zip
-          echo "ZIP file contents:"
-          unzip -l build.zip
+#      - name: Create ZIP file
+#        run: |
+#          zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
+#          echo "ZIP file details:"
+#          ls -l build.zip
+#          echo "ZIP file contents:"
+#          unzip -l build.zip
       - name: Verify ZIP file
         run: |
           if [ -f "build.zip" ]; then
@@ -53,12 +55,20 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Upload to Chrome Web Store
-        uses: trmcnvn/chrome-addon@v2
+      - name: Publish to Chrome Web Store
+        uses: redromnon/chrome-webstore-publish@v1.1.0
         with:
-          extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
+          client_id: ${{ secrets.CHROME_CLIENT_ID }}
+          client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          zip: ./build.zip
+#      - uses: actions/checkout@v3
+#      - name: Upload to Chrome Web Store
+#        uses: trmcnvn/chrome-addon@v2
+#        with:
+#          extension: ${{ secrets.CHROME_EXTENSION_ID }}
+#          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
+#          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+#          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+#          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
