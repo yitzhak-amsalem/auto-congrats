@@ -47,11 +47,11 @@ jobs:
       - name: Publish to Chrome Web Store
         uses: trmcnvn/chrome-addon@v2
         with:
-          extension: ${{ secrets.EXTENSION_ID }}
+          extension: ${{ secrets.CHROME_EXTENSION_ID }}
           zip: build.zip
-          client-id: ${{ secrets.CLIENT_ID }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
-          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 #      - uses: actions/checkout@v3
 #      - name: Upload to Chrome Web Store
 #        uses: trmcnvn/chrome-addon@v2
