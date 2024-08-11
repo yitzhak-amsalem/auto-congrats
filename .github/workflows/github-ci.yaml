@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '20'
       - name: Zip the extension
-        run: zip -r build.zip . -x "*.git*" "node_modules/*" "package-lock.json"
+        run: zip -r build.zip * -x .git .github
       - name: List after zipping
         run: |
           echo "All files and directories (including hidden):"
@@ -45,13 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish to Chrome Web Store
-        uses: trmcnvn/chrome-addon@v2
+        uses: firebears-docker/chrome-webstore-upload-cli-action@v2.0.3
         with:
-          extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
+          zip_file: /home/runner/work/auto-congrats/auto-congrats/build.zip
+          client_id: ${{ secrets.CHROME_CLIENT_ID }}
+          client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 #      - uses: actions/checkout@v3
 #      - name: Upload to Chrome Web Store
 #        uses: trmcnvn/chrome-addon@v2
