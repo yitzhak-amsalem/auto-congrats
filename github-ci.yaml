@@ -1,0 +1,41 @@
+name: Publish Chrome Extension
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Zip the extension
+        run: zip -r my-extension.zip path/to/extension
+
+#      - name: Publish to Chrome Web Store
+#        uses: redromnon/chrome-webstore-publish@v1.1.0
+#        with:
+#          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
+#          client_id: ${{ secrets.CHROME_CLIENT_ID }}
+#          client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+#          refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+#          zip: ./my-extension.zip
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Upload to Chrome Web Store
+        uses: trmcnvn/chrome-addon@v2
+        with:
+          extension: ${{ secrets.EXTENSION_ID }}
+          zip: build.zip
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
