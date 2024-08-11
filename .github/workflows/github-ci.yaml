@@ -45,13 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish to Chrome Web Store
-        uses: ekryski/chrome-webstore-upload@v1.0.3
+        uses: trmcnvn/chrome-addon@v2
         with:
-          client_id: ${{ secrets.CHROME_CLIENT_ID }}
-          client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: ./build.zip
+          extension: ${{ secrets.EXTENSION_ID }}
+          zip: build.zip
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
 #      - uses: actions/checkout@v3
 #      - name: Upload to Chrome Web Store
 #        uses: trmcnvn/chrome-addon@v2
