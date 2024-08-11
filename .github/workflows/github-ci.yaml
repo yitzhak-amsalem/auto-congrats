@@ -19,8 +19,10 @@ jobs:
           mkdir -p build
           zip -r build/extension.zip . -x .git .github
         working-directory: ./  # Adjust this if needed based on where your files are
-      - name: Verify Zip File
-        run: ls -la build
+      - name: Verify Zip File Location
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la build
 
 #      - name: List after zipping
 #        run: |
@@ -35,16 +37,23 @@ jobs:
 #            exit 1
 #          fi
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+
       - name: Publish to Chrome Web Store
         uses: trmcnvn/chrome-addon@v2
         with:
-          extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: build/extension.zip
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+        extension: ${{ secrets.CHROME_EXTENSION_ID }}
+        zip: build/extension.zip
+        client-id: ${{ secrets.CHROME_CLIENT_ID }}
+        client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Publish to Chrome Web Store
+#        uses: trmcnvn/chrome-addon@v2
+#        with:
+#          extension: ${{ secrets.CHROME_EXTENSION_ID }}
+#          zip: build/extension.zip
+#          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+#          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+#          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
