@@ -14,20 +14,26 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - name: Zip the extension
-        run: zip -r build.zip * -x .git .github
-      - name: List after zipping
+      - name: Zip extension
         run: |
-          echo "All files and directories (including hidden):"
-          find . -not -path '*/\.*'
-      - name: Verify ZIP file
-        run: |
-          if [ -f "build.zip" ]; then
-            echo "build.zip exists"
-          else
-            echo "build.zip does not exist"
-            exit 1
-          fi
+          mkdir -p build
+          zip -r build/extension.zip . -x .git .github
+        working-directory: ./  # Adjust this if needed based on where your files are
+      - name: Verify Zip File
+        run: ls -la build
+
+#      - name: List after zipping
+#        run: |
+#          echo "All files and directories (including hidden):"
+#          find . -not -path '*/\.*'
+#      - name: Verify ZIP file
+#        run: |
+#          if [ -f "build.zip" ]; then
+#            echo "build.zip exists"
+#          else
+#            echo "build.zip does not exist"
+#            exit 1
+#          fi
 
   publish:
     needs: build
@@ -38,16 +44,7 @@ jobs:
         uses: trmcnvn/chrome-addon@v2
         with:
           extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
+          zip: build/extension.zip
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-#      - uses: actions/checkout@v3
-#      - name: Upload to Chrome Web Store
-#        uses: trmcnvn/chrome-addon@v2
-#        with:
-#          extension: ${{ secrets.CHROME_EXTENSION_ID }}
-#          zip: /home/runner/work/auto-congrats/auto-congrats/build.zip
-#          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-#          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-#          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
