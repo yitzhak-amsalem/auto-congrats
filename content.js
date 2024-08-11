@@ -33,7 +33,7 @@ const scanRelevantForDecision = (relevantMessages) => {
 }
 
 const scanChatForMessages = (conversationPanelWrapper) => {
-    const msgSelectorAll = '[data-testid="msg-container"]';
+    const msgSelectorAll = '[role="row"]';
     return waitForNodes(conversationPanelWrapper, msgSelectorAll);
 }
 
@@ -46,9 +46,8 @@ const parseMessages = (messages) => {
 }
 
 const isSentByMe = (msg) => {
-    const sentByMeElementA = msg.querySelector('[data-testid="msg-dblcheck"]');
-    const sentByMeElementB = msg.querySelector('[data-testid="msg-check"]');
-    return (sentByMeElementA !== null || sentByMeElementB !== null);
+    const sentByMeElement = msg.children[0].getAttribute("data-id");
+    return sentByMeElement && sentByMeElement.startsWith("true");
 }
 
 const getMessageDate = (msg) => {
@@ -297,13 +296,13 @@ const sendMessage = () => {
         clipboardData: dataTransfer,
         bubbles: true
     });
-    let conversationInputElement = document.querySelector('[data-testid="conversation-compose-box-input"]');
+    let conversationInputElement = document.querySelector('[aria-placeholder="הקלדת הודעה"]');
     setTimeout(() => {
         conversationInputElement.click();
         conversationInputElement.dispatchEvent(event);
     }, 500);
     setTimeout(() => {
-        const send = document.querySelector('[data-testid="send"]');
+        const send = document.querySelector('[aria-label="שליחה"]');
         send.click();
     }, 1500);
 }
@@ -313,7 +312,7 @@ const observer = new MutationObserver((mutationsList) => {
         if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
             const addedNodes = Array.from(mutation.addedNodes);
             const newChatNodes = addedNodes.filter(node =>
-                node.getAttribute && node.getAttribute("data-testid") === "conversation-panel-wrapper"
+                node.getAttribute && node.getAttribute("id") === "main"
             );
             if (newChatNodes.length > 0) {
                 const conversationPanelWrapper = newChatNodes[0];
