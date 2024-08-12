@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '20'
       - name: Get Previous Version from Git
-        id: previous-version
+        id: prev_version
         run: |
           git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
           echo "Previous version: $(cat prev_version.txt)"
