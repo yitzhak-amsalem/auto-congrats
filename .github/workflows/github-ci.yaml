@@ -12,10 +12,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+
       - name: Get Previous Version from Git
         id: prev_version
         run: |
@@ -37,47 +39,10 @@ jobs:
             exit 1
           fi
 
-#      - name: Check Version Update
-#        id: check-version
-#        run: |
-#          version_gt() {
-#            # Compare two versions passed as arguments.
-#            # Returns 0 (true) if $1 > $2
-#            # Returns 1 (false) otherwise
-#            [ "$1" = "$2" ] && return 1
-#            local IFS=.
-#            local i ver1=($1) ver2=($2)
-#            # Fill empty fields in ver1 with zeros
-#            for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
-#                ver1[i]=0
-#            done
-#            # Compare version numbers
-#            for ((i=0; i<${#ver1[@]}; i++)); do
-#                if [[ -z ${ver2[i]} ]]; then
-#                    ver2[i]=0
-#                fi
-#                if ((10#${ver1[i]} > 10#${ver2[i]})); then
-#                    return 0
-#                fi
-#                if ((10#${ver1[i]} < 10#${ver2[i]})); then
-#                    return 1
-#                fi
-#            done
-#            return 1
-#          }
-#
-#          if version_gt "$CURRENT_VERSION" "$PREVIOUS_VERSION"; then
-#            echo "Version has been updated. Proceeding with publishing."
-#          else
-#            echo "The version in manifest.json is not greater than the previous version."
-#            exit 1
-#          fi
-
       - name: Zip Extension
         run: |
           mkdir -p build
           zip -r build/extension.zip . -x ".git/*" ".github/*"
-        working-directory: ./  # Adjust this if needed based on where your files are
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
@@ -97,11 +62,6 @@ jobs:
         with:
           name: extension-zip
           path: build
-
-      - name: Verify Zip File Location
-        run: |
-          echo "Current directory: $(pwd)"
-          ls -la build
 
       - name: Publish to Chrome Web Store
         uses: trmcnvn/chrome-addon@v2
