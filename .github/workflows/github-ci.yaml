@@ -32,6 +32,12 @@ jobs:
           VERSION=$(echo $RESPONSE | jq -r '.crxVersion')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      - name: Delay After
+        run: sleep 2
+      - name: Print Access Token
+        run: |
+          echo "Extension version: ${{ env.VERSION }}"
+
       - name: Check Version Update
         id: check-version
         run: |
