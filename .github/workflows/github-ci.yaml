@@ -34,8 +34,8 @@ jobs:
       - name: Get Extension Version
         id: get-extension-version
         run: |
-          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}")
-          VERSION=$(echo $RESPONSE | jq -r '.version')
+          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}?projection=DRAFT")
+          VERSION=$(echo $RESPONSE | jq -r '.crxVersion')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Delay After
