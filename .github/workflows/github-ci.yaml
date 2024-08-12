@@ -55,7 +55,7 @@ jobs:
           curr_version=$(cat curr_version.txt)
           echo "Previous version: $prev_version"
           echo "Current version: $curr_version"
-          if version_gt "curr_version" "prev_version"; then
+          if version_gt "$curr_version" "$prev_version"; then
             echo "Version has been updated. Proceeding with publishing."
           else
             echo "The version in manifest.json is not greater than the previous version."
