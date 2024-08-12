@@ -21,15 +21,14 @@ jobs:
         run: |
           git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
           echo "Previous version: $(cat prev_version.txt)"
-      - name: Get Current Version from manifest.json
-        id: current-version
+      - name: Get current manifest version
+        id: curr_version
         run: |
-          CURRENT_VERSION=$(cat manifest.json | jq -r '.version')
-          echo "Current version in manifest.json: $CURRENT_VERSION"
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          jq -r '.version' < manifest.json > curr_version.txt
+          echo "Current version: $(cat curr_version.txt)"
       - name: Compare manifest versions
         run: |
-          if [ "$(cat prev_version.txt)" = "$(cat curr_version.txt)" ]; then
+          if [ "$(cat prev_version.txt)" < "$(cat curr_version.txt)" ]; then
             echo "Version has not increased. Failing the build."
             exit 1
           fi
