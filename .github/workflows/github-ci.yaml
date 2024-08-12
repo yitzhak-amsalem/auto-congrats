@@ -18,21 +18,46 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Get Previous Version from Git
-        id: prev_version
-        run: |
-          git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
-          echo "Previous version: $(cat prev_version.txt)"
-      - name: Get current manifest version
-        id: curr_version
-        run: |
-          jq -r '.version' < manifest.json > curr_version.txt
-          echo "Current version: $(cat curr_version.txt)"
       - name: Compare manifest versions
+        id: version_check
         run: |
+          # Extract previous and current versions
+          git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
+          jq -r '.version' < manifest.json > curr_version.txt
+
           prev_version=$(cat prev_version.txt)
           curr_version=$(cat curr_version.txt)
-          if [ "$(printf '%s\n' "$prev_version" "$curr_version" | sort -V | head -n1)" = "$curr_version" ] && [ "$prev_version" != "$curr_version" ]; then
+          echo "Previous version: $prev_version"
+          echo "Current version: $curr_version"
+
+          # Check if versions are semantically correct
+          if [ -z "$prev_version" ] || [ -z "$curr_version" ]; then
+            echo "Version information is missing. Failing the build."
+            exit 1
+          fi
+
+          # Function to compare versions
+          compare_versions() {
+            version1=$1
+            version2=$2
+            if [ "$version1" = "$version2" ]; then
+              return 0
+            fi
+
+            # Convert versions to a format that can be compared
+            version1=$(echo "$version1" | awk -F. '{printf("%04d%04d%04d\n", $1, $2, $3)}')
+            version2=$(echo "$version2" | awk -F. '{printf("%04d%04d%04d\n", $1, $2, $3)}')
+
+            if [ "$version1" -lt "$version2" ]; then
+              return 1
+            else
+              return 0
+            fi
+          }
+
+          # Compare versions and handle the result
+          compare_versions "$prev_version" "$curr_version"
+          if [ $? -eq 1 ]; then
             echo "Version has increased. Proceeding with the build."
           else
             echo "Version has not increased. Failing the build."
