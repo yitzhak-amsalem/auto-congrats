@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Say Congrats",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Whatsapp Web extension - Auto Congrats Sending",
   "permissions": [],
   "action": {
