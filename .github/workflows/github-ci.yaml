@@ -15,12 +15,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
@@ -91,7 +91,7 @@ jobs:
           zip -r build/extension.zip . -x ".git/*" ".github/*"
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: extension-zip
           path: build/extension.zip
@@ -102,10 +102,10 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Build Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: extension-zip
           path: build
