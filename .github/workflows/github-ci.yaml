@@ -5,6 +5,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to Chrome Web Store'
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -97,6 +103,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: build
+    if: github.event.inputs.publish == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
