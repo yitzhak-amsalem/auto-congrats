@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -68,10 +69,10 @@ jobs:
           }
 
           # Extract previous and current versions
-          git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
+#          git show HEAD~1:manifest.json | jq -r '.version' > prev_version.txt
           jq -r '.version' < manifest.json > curr_version.txt
 
-          prev_version=$(cat prev_version.txt)
+          prev_version=${{ env.VERSION }}
           curr_version=$(cat curr_version.txt)
           echo "Previous version: $prev_version"
           echo "Current version: $curr_version"
@@ -110,7 +111,7 @@ jobs:
         uses: trmcnvn/chrome-addon@v2
         with:
           extension: ${{ secrets.CHROME_EXTENSION_ID }}
-          zip: build/extension1.zip
+          zip: build/extension.zip
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
