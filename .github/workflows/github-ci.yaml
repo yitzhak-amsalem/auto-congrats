@@ -22,10 +22,11 @@ jobs:
         id: get-token
         run: |
           JSON_TOKEN=$(curl -s -X POST -d "client_id=${{ secrets.CHROME_CLIENT_ID }}&client_secret=${{ secrets.CHROME_CLIENT_SECRET }}&refresh_token=${{ secrets.CHROME_REFRESH_TOKEN }}&grant_type=refresh_token" https://oauth2.googleapis.com/token)
-          echo $JSON_TOKEN > access_token.txt
           ACCESS_TOKEN=$(echo $JSON_TOKEN | jq -r '.access_token')
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
+      - name: Delay Before
+        run: sleep 2
       - name: Print Access Token
         run: |
           echo "Access Token: ${{ env.ACCESS_TOKEN }}"
@@ -33,11 +34,15 @@ jobs:
       - name: Get Extension Version
         id: get-extension-version
         run: |
-          EXTENSION_ID=${{ secrets.CHROME_EXTENSION_ID }}
-          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" "https://www.googleapis.com/chromewebstore/v1.1/items/$EXTENSION_ID")
+          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}")
           VERSION=$(echo $RESPONSE | jq -r '.version')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Extension version: $VERSION"
+
+      - name: Delay After
+        run: sleep 2
+      - name: Print Access Token
+        run: |
+          echo "Extension version: ${{ env.VERSION }}"
 
       - name: Check Version Update
         id: check-version
