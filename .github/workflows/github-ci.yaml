@@ -21,7 +21,8 @@ jobs:
       - name: Obtain Access Token
         id: get-token
         run: |
-          ACCESS_TOKEN=$(curl -s -X POST -d "client_id=${{ secrets.CHROME_CLIENT_ID }}&client_secret=${{ secrets.CHROME_CLIENT_SECRET }}&refresh_token=${{ secrets.CHROME_REFRESH_TOKEN }}&grant_type=refresh_token" https://oauth2.googleapis.com/token | jq -r '.access_token')
+          JSON_TOKEN=$(curl -s -X POST -d "client_id=${{ secrets.CHROME_CLIENT_ID }}&client_secret=${{ secrets.CHROME_CLIENT_SECRET }}&refresh_token=${{ secrets.CHROME_REFRESH_TOKEN }}&grant_type=refresh_token" https://oauth2.googleapis.com/token)
+          ACCESS_TOKEN=$(echo $JSON_TOKEN | jq -r '.access_token')
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
       - name: Get Extension Version
