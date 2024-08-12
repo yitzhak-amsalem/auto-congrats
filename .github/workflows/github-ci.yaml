@@ -28,11 +28,14 @@ jobs:
           echo "Current version: $(cat curr_version.txt)"
       - name: Compare manifest versions
         run: |
-          if [ "$(cat prev_version.txt)" < "$(cat curr_version.txt)" ]; then
+          prev_version=$(cat prev_version.txt)
+          curr_version=$(cat curr_version.txt)
+          if [ "$(printf '%s\n' "$prev_version" "$curr_version" | sort -V | head -n1)" = "$curr_version" ] && [ "$prev_version" != "$curr_version" ]; then
+            echo "Version has increased. Proceeding with the build."
+          else
             echo "Version has not increased. Failing the build."
             exit 1
           fi
-          echo "Version has increased. Proceeding with the build."
 
 #      - name: Check Version Update
 #        id: check-version
